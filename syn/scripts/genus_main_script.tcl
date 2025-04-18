@@ -18,7 +18,10 @@ puts $g_start_setup
 set_db / .hdl_track_filename_row_col              true
 set_db / .information_level                       11
 set_db / .source_verbose                          true
-
+##### Parallel config #####
+set_db / .max_cpus_per_server  4
+set_multi_cpu_usage -local_cpu 4
+###########################
 #set_db / .input_pragma_keyword {synopsys}
 
 #set_db / .hdl_error_on_logic_abstract             true

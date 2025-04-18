@@ -60,11 +60,13 @@ class npu_apb_reg_config extends uvm_object;
     // Genetate tensors depending on APB config
 
     virtual function void gen_tensors();
-        if(!std::randomize(tensors) with {
-            tensors[ADDR_T0].size() == apb_regs[ADDR_T0_0] * apb_regs[ADDR_T0_1] * apb_regs[ADDR_T0_2];
-            tensors[ADDR_T1].size() == apb_regs[ADDR_T1_0] * apb_regs[ADDR_T1_1] * apb_regs[ADDR_T1_2];
-        }) begin
-            `uvm_fatal(get_name(), "Can't randomize tensors!");
+        tensors[ADDR_T0] = new[apb_regs[ADDR_T0_0] * apb_regs[ADDR_T0_1] * apb_regs[ADDR_T0_2]];
+        tensors[ADDR_T1] = new[apb_regs[ADDR_T1_0] * apb_regs[ADDR_T1_1] * apb_regs[ADDR_T1_2]];
+        foreach(tensors[ADDR_T0][i]) begin
+            tensors[ADDR_T0][i] = $urandom(); // blazingly fast, but 32 bit
+        end
+        foreach(tensors[ADDR_T1][i]) begin
+            tensors[ADDR_T1][i] = $urandom(); // blazingly fast, but 32 bit
         end
     endfunction
 
@@ -302,13 +304,13 @@ class npu_apb_reg_config_small extends npu_apb_reg_config_start;
 
     // Rows
     constraint rows_c {
-        apb_regs[ADDR_T0_0] inside {[8:32]};
+        apb_regs[ADDR_T0_0] inside {[8:16]};
         apb_regs[ADDR_T1_0] inside {[3: 8]};
     }
 
     // Columns
     constraint cols_c {
-        apb_regs[ADDR_T0_1] inside {[8:32]};
+        apb_regs[ADDR_T0_1] inside {[8:16]};
         apb_regs[ADDR_T1_1] inside {[3: 8]};
     }
 
@@ -318,4 +320,34 @@ class npu_apb_reg_config_small extends npu_apb_reg_config_start;
         apb_regs[ADDR_T1_2] inside {[3:4]};
     }
 
+endclass
+
+
+//---------------------------------------------------------
+// Class: npu_apb_reg_config_playground
+//---------------------------------------------------------
+
+// Config with user defined matrixes sizes
+
+class npu_apb_reg_config_playground extends npu_apb_reg_config_start;
+
+    `uvm_object_utils(npu_apb_reg_config_playground)
+
+    function void post_randomize();
+        // Get matrix sizes from commandline
+        void'($value$plusargs("ADDR_T0_0=%0d", apb_regs[ADDR_T0_0]));
+        void'($value$plusargs("ADDR_T0_1=%0d", apb_regs[ADDR_T0_1]));
+        void'($value$plusargs("ADDR_T0_2=%0d", apb_regs[ADDR_T0_2]));
+        void'($value$plusargs("ADDR_T1_0=%0d", apb_regs[ADDR_T1_0]));
+        void'($value$plusargs("ADDR_T1_1=%0d", apb_regs[ADDR_T1_1]));
+        void'($value$plusargs("ADDR_T1_2=%0d", apb_regs[ADDR_T1_2]));
+        // Calculate result size
+        apb_regs[ADDR_T2_0] = apb_regs[ADDR_T0_0] -
+                              apb_regs[ADDR_T1_0] + 1;
+        apb_regs[ADDR_T2_1] = apb_regs[ADDR_T0_1] -
+                              apb_regs[ADDR_T1_1] + 1;
+        apb_regs[ADDR_T2_2] = apb_regs[ADDR_T0_2] *
+                              apb_regs[ADDR_T1_2];
+    endfunction
+    
 endclass

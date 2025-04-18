@@ -9,7 +9,7 @@ GENUS_OPTS    +=  -common_ui
 GENUS_OPTS    +=  -files $(SYN_DIR)/scripts/genus_main_script.tcl
 
 CDNS_OPTS     +=  -stylus
-CDNS_OPTS     +=  -cpus 8
+# CDNS_OPTS     +=  -cpus 8
 # CDNS_OPTS     +=  -no_gui
 
 export GEN_WORK    := $(SYN_DIR)/work_genus

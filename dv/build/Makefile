@@ -4,6 +4,24 @@ SHELL  := bash
 # Makefile for AXI4 NPU DV
 #---------------------------------------------------------
 
+# User settings for matrixes
+ADDR_T0_0 = 4
+ADDR_T0_1 = 4
+ADDR_T0_2 = 3
+ADDR_T1_0 = 4
+ADDR_T1_1 = 4
+ADDR_T1_2 = 3
+
+SIZES_SIM_OPTS = +ADDR_T0_0=$(ADDR_T0_0) +ADDR_T1_0=$(ADDR_T1_0) \
+				 +ADDR_T0_1=$(ADDR_T0_1) +ADDR_T1_1=$(ADDR_T1_1) \
+				 +ADDR_T0_2=$(ADDR_T0_2) +ADDR_T1_2=$(ADDR_T1_2)
+
+# Iterations amount for tensor calculation
+ITER_AM = 5
+
+# Tensor calculation timeout in clock cycles
+TIMEOUT = 500000
+
 # Seed
 SEED := $(shell echo $$RANDOM)
 
@@ -106,13 +124,15 @@ $(rtl_run_logs): $(OUT)/vip_compile.log $(OUT)/rtl_compile.log \
 	@vsim  $(RUN_OPTS) -do "run -all; wave zoom full; quit;" tb_npu_top \
 		-sv_seed $(SEED) -mvchome $$QUESTA_MVC_HOME +UVM_TESTNAME=$(shell basename $(dir $@)) \
 			+UVM_VERBOSITY=$(VERBOSITY) +en_stats=$(EN_STATS) -l $@ -wlf $(basename $@).wlf \
-				-suppress 3829 +log_file_name=$(dir $@)/hack_2025_rtl_plus_stats.txt > $@ 
+				-suppress 3829 +log_file_name=$(dir $@)/hack_2025_rtl_plus_stats.txt $(SIZES_SIM_OPTS) \
+					+iter_am=$(ITER_AM) +seq_timeout_clks=$(TIMEOUT) > $@ 
 	@rm -rf transcript
 	@sh check_log.sh $@
 	@printf "%-100s" "$(shell date) | Test: $(shell basename $(dir $@))" >> run_history.log
 	@printf "%-20s" " | Seed: $(SEED)" >> run_history.log
 	@echo -n " | " >> run_history.log
 	@sh check_log.sh $@ >> run_history.log
+	@cp $@ $(OUT)
 
 # Clean output directory
 clean:

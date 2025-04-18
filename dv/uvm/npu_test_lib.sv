@@ -580,7 +580,9 @@ class npu_test_base extends uvm_test;
     
     virtual function void report_phase(uvm_phase phase);
 
-        // TODO: implement
+        `uvm_info(get_name(), $sformatf(
+            "\n\nTest simulation cycles: %0d\n\n",
+                $time()/npu_dv_pkg::CLK_PERIOD), UVM_NONE);
 
     endfunction
 
@@ -739,7 +741,6 @@ class npu_apb_random_access_test extends npu_test_base;
         npu_apb_reg_config::type_id::set_type_override(
             npu_apb_reg_config_no_start::get_type());
         super.create_configs();
-        test_config.iter_am = 10;
     endfunction
 
     
@@ -791,8 +792,6 @@ class npu_apb_fixed_work_mode_test extends npu_test_base;
         npu_apb_reg_config::type_id::set_type_override(
             npu_apb_reg_config_fixed::get_type());
         super.create_configs();
-        test_config.iter_am = 3;
-        test_config.seq_timeout_clks = 1000000;
     endfunction
 
 
@@ -820,6 +819,85 @@ class npu_apb_fixed_work_mode_test extends npu_test_base;
             seqs = {seq}; run_apb_seq_queue(seqs);
         end
     endtask
+
+
+endclass
+
+
+//---------------------------------------------------------
+// Class: npu_full_tensor_test
+//---------------------------------------------------------
+
+// NPU full tensor test with all range sizes randomly picked
+
+class npu_full_tensor_test extends npu_apb_fixed_work_mode_test;
+
+    `uvm_component_utils(npu_full_tensor_test)
+    `uvm_component_new
+
+
+    //---------------------------------------------------------
+    // Function: create_configs
+    //---------------------------------------------------------
+
+    virtual function void create_configs();
+        npu_apb_reg_config_fixed::type_id::set_type_override(
+            npu_apb_reg_config_start::get_type());
+        super.create_configs();
+    endfunction
+
+
+endclass
+
+
+//---------------------------------------------------------
+// Class: npu_small_tensor_test
+//---------------------------------------------------------
+
+// NPU small tensor test with relatively small sizes
+
+class npu_small_tensor_test extends npu_apb_fixed_work_mode_test;
+
+    `uvm_component_utils(npu_small_tensor_test)
+    `uvm_component_new
+
+
+    //---------------------------------------------------------
+    // Function: create_configs
+    //---------------------------------------------------------
+
+    virtual function void create_configs();
+        npu_apb_reg_config_fixed::type_id::set_type_override(
+            npu_apb_reg_config_small::get_type());
+        super.create_configs();
+    endfunction
+
+
+endclass
+
+
+//---------------------------------------------------------
+// Class: npu_playground_tensor_test
+//---------------------------------------------------------
+
+// NPU small tensor test with relatively small sizes
+
+class npu_playground_tensor_test extends npu_apb_fixed_work_mode_test;
+
+    `uvm_component_utils(npu_playground_tensor_test)
+    `uvm_component_new
+
+
+    //---------------------------------------------------------
+    // Function: create_configs
+    //---------------------------------------------------------
+
+    virtual function void create_configs();
+        npu_apb_reg_config_fixed::type_id::set_type_override(
+            npu_apb_reg_config_playground::get_type());
+        super.create_configs();
+        test_config.iter_am = 1;
+    endfunction
 
 
 endclass
