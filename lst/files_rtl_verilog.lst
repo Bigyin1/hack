@@ -1,0 +1,17 @@
+rtl/include/npu_pkg.sv
+rtl/include/npu_addrdata_bus.sv
+rtl/include/npu_apb_bus.sv
+rtl/include/npu_axi4lite_bus.sv
+rtl/include/npu_csr_bus.sv
+rtl/config/npu_csr.sv
+rtl/lsu/npu_lsu.sv
+rtl/mac/npu_mac_top.sv    
+rtl/mac/npu_bias_o.sv 
+rtl/mac/npu_cu.sv     
+rtl/mac/npu_mac.sv    
+rtl/mac/npu_relu.sv   
+rtl/mac/npu_scale_o.sv
+rtl/mac/npu_zp_i.sv   
+rtl/mac/npu_zp_o.sv
+rtl/npu_top.sv
+rtl/npu_wrapper.sv

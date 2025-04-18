@@ -1,0 +1,3 @@
++incdir+$QUESTA_MVC_HOME/questa_mvc_src/sv
++incdir+$QUESTA_MVC_HOME/questa_mvc_src/sv/axi4
++incdir+$QUESTA_MVC_HOME/questa_mvc_src/sv/apb3

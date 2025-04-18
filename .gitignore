@@ -1,0 +1,7 @@
+syn/out
+syn/work_genus
+**/out
+**/work
+**/*.log
+**/vstf.log
+metrics/metrics.txt

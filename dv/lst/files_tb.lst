@@ -1,0 +1,4 @@
+$QUESTA_MVC_HOME/examples/axi4/common/clk_reset.sv
+$QUESTA_MVC_HOME/questa_mvc_src/sv/axi4/modules/axi4_slave.sv
+$QUESTA_MVC_HOME/questa_mvc_src/sv/apb3/modules/apb_master.sv
+../tb/tb_npu_top.sv
